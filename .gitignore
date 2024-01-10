@@ -1,0 +1,23 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# MongoDB
+data/db/
+
+# Môi trường
+.env
+
+# Thư mục xây dựng
+build/
+dist/
+
+# Log và tệp tạm thời
+logs/
+tmp/
+log.txt
+
+# Debug và VSCode
+.vscode/
+.DS_Store
