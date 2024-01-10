@@ -1,20 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
+const routes = require('./routes');
+const bodyParser = require('body-parser');
+const db = require('./config/db/connect');
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 2002;
 
-app.get('/', (req, res) => {
-  res.send('heloo worddd');
-});
-
-console.log('process.env.MONGO_DB', process.env.MONGO_DB);
-mongoose
-  .connect(`${process.env.MONGO_DB}`)
-  .then(() => console.log('thanh cong'))
-  .catch((err) => console.log('Looi ket noi'));
-
+app.use(bodyParser.json());
+routes(app);
+db.connect();
 app.listen(port, () => {
   console.log(`Code backEnd Phia shopSale http://localhost:${port} `);
 });
