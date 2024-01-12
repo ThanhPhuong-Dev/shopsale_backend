@@ -43,7 +43,6 @@ const updateProduct = (productID, data) => {
       const checkiDProduct = await Product.findOne({
         _id: productID
       });
-      // console.log('fsdfs', checkiDProduct);
       // const checkProduct = await Product.findOne({
       //   name: name
       // });
@@ -91,7 +90,7 @@ const getDetailsProduct = (productID) => {
       const checkiDProduct = await Product.findOne({
         _id: productID
       });
-      console.log('test', checkiDProduct);
+
       if (checkiDProduct === null) {
         resolve({
           status: 'error',
@@ -135,4 +134,59 @@ const deleteProduct = (productID) => {
     }
   });
 };
-module.exports = { createProduct, updateProduct, getDetailsProduct, deleteProduct };
+
+const getAllProduct = (limit, page, sort, filter) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const totalProduct = await Product.countDocuments();
+
+      if (filter) {
+        const filterProduct = await Product.find({
+          [filter[0]]: { $regex: filter[1] }
+        });
+        resolve({
+          status: 'OK',
+          message: 'Sussces filter',
+          data: filterProduct,
+          totalProduct: totalProduct,
+          pageCurrent: Number(page + 1),
+          totalPage: Math.ceil(totalProduct / limit)
+        });
+      }
+
+      //sort
+      if (sort) {
+        const objectSort = {};
+        objectSort[sort[1]] = sort[0];
+        const allProductSort = await Product.find({})
+          .limit(limit)
+          .skip(page * limit)
+          .sort(objectSort);
+
+        resolve({
+          status: 'OK',
+          message: 'Sussces sort',
+          data: allProductSort,
+          totalProduct: totalProduct,
+          pageCurrent: Number(page + 1),
+          totalPage: Math.ceil(totalProduct / limit)
+        });
+      }
+
+      const checkiDProduct = await Product.find({})
+        .limit(limit)
+        .skip(page * limit);
+      resolve({
+        status: 'OK',
+        message: 'Sussces remove',
+        data: checkiDProduct,
+        totalProduct: totalProduct,
+        pageCurrent: Number(page + 1),
+        totalPage: Math.ceil(totalProduct / limit)
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+module.exports = { createProduct, updateProduct, getDetailsProduct, deleteProduct, getAllProduct };
