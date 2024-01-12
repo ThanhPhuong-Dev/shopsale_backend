@@ -58,9 +58,8 @@ class ProductControllers {
     }
   }
 
-
-   // [DELETE] /product/delete/:id
-   async deleteProduct(req, res, next) {
+  // [DELETE] /product/delete/:id
+  async deleteProduct(req, res, next) {
     try {
       const productID = req.params.id;
       if (!productID) {
@@ -70,6 +69,21 @@ class ProductControllers {
         });
       }
       const response = await ProductService.deleteProduct(productID);
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
+
+  // [GET] /product/getAllProduct
+  async getAllProduct(req, res, next) {
+    try {
+      const { page, limit, sort, filter } = req.query;
+
+      const response = await ProductService.getAllProduct(Number(limit) || 8, Number(page) || 0, sort, filter);
+
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
