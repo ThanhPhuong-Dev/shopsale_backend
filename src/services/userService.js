@@ -4,22 +4,26 @@ const { generalAccessToken, generalRefreshToken } = require('./jwtService');
 
 const registerUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, password, confirmPassword, phone } = newUser;
+    const { name, email, password, confirmPassword } = newUser;
     try {
       const checkEmail = await User.findOne({ email: email });
-      console.log('Kiểm tra email:', checkEmail);
       if (checkEmail !== null) {
-        resolve({
-          status: 'Ok',
-          message: 'the email is already'
+        reject({
+          status: 'ERR',
+          message: 'Email Đã Được Sử Dụng!!!'
+        });
+      }
+      if (password !== confirmPassword) {
+        return reject({
+          status: 'ERR',
+          message: 'Mật Khẩu Không trùng Khớp!!!'
         });
       }
       const hashedPassword = bcrypt.hashSync(password, 10);
       const createUser = await User.create({
         name,
         email,
-        password: hashedPassword,
-        phone
+        password: hashedPassword
       });
       if (createUser) {
         resolve({
@@ -40,17 +44,17 @@ const loginUser = (newUser) => {
     try {
       const checkUser = await User.findOne({ email: email });
       if (checkUser === null) {
-        resolve({
-          status: 'Ok',
-          message: 'the user is not defined'
+        reject({
+          status: 'ERR',
+          message: 'Người Dùng Này Không Tồn Tại!!!'
         });
       }
 
       const comparePassword = bcrypt.compareSync(password, checkUser.password);
       if (!comparePassword) {
-        resolve({
-          status: 'Ok',
-          message: 'the user wrong password'
+        reject({
+          status: 'ERR',
+          message: 'Người Giùm Nhập Sai Mật Khẩu!!!'
         });
       }
 
@@ -140,14 +144,13 @@ const getDetailsUser = (userID) => {
       const checkUser = await User.findOne({ _id: userID });
       if (checkUser === null) {
         resolve({
-          status: 'Ok',
+          status: 'ERR',
           message: 'the user is not defined'
         });
       }
-
       resolve({
         status: 'OK',
-        message: 'Remove Success',
+        message: 'Success',
         data: checkUser
       });
     } catch (e) {
