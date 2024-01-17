@@ -178,7 +178,7 @@ const getAllProduct = (limit, page, sort, filter) => {
         .skip(page * limit);
       resolve({
         status: 'OK',
-        message: 'Sussces remove',
+        message: 'Sussces getALL',
         data: checkiDProduct,
         totalProduct: totalProduct,
         pageCurrent: Number(page + 1),

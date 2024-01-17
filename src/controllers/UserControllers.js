@@ -6,24 +6,24 @@ class UserControllers {
   // [POST] /user/register
   async register(req, res, next) {
     try {
-      const { name, email, password, confirmPassword, phone } = req.body;
+      const { email, password, confirmPassword } = req.body;
       const isCheckEmail = ValidateEmail(email);
-      if (!name || !email || !password || !confirmPassword || !phone) {
-        return res.status(200).json({
-          status: 'EROOR',
-          message: 'the input required'
+      if (!email || !password || !confirmPassword) {
+        return res.status(400).json({
+          status: 'ERR',
+          message: 'The input required!!!'
         });
       } else if (!isCheckEmail) {
-        return res.status(200).json({
-          status: 'Error',
-          message: 'the input email'
-        });
-      } else if (password !== confirmPassword) {
-        return res.status(200).json({
-          status: 'Error',
-          message: 'the input passsww'
+        return res.status(400).json({
+          message: { status: 'ERR', message: 'Mời Nhập Email Chính Xác!!!' }
         });
       }
+      // else if (password !== confirmPassword) {
+      //   return res.status(400).json({
+      //     status: 'ERR',
+      //     message: 'Mật Khẩu Không trùng Khớp!!!'
+      //   });
+      // }
       const response = await UserService.registerUser(req.body);
       return res.status(200).json(response);
     } catch (e) {
@@ -36,26 +36,27 @@ class UserControllers {
   // [POST] /user/login
   async login(req, res, next) {
     try {
-      const { name, email, password, confirmPassword, phone } = req.body;
+      const { email, password } = req.body;
       const isCheckEmail = ValidateEmail(email);
-      if (!name || !email || !password || !confirmPassword || !phone) {
-        return res.status(200).json({
-          status: 'EROOR',
-          message: 'the input required'
+      if (!email || !password) {
+        return res.status(400).json({
+          status: 'ERR',
+          message: 'The login required'
         });
       } else if (!isCheckEmail) {
-        return res.status(200).json({
-          status: 'Error',
-          message: 'the input email'
-        });
-      } else if (password !== confirmPassword) {
-        return res.status(200).json({
-          status: 'Error',
-          message: 'the input passsww'
+        return res.status(400).json({
+          status: 'ERR',
+          message: 'Mời Nhập Email Chính Xác!!!'
         });
       }
       const response = await UserService.loginUser(req.body);
-      return res.status(200).json(response);
+      const { refresh_token, ...newResponse } = response;
+
+      res.cookie('refresh_token', refresh_token, {
+        HttpOnly: true,
+        Secure: true
+      });
+      return res.status(200).json(newResponse);
     } catch (e) {
       return res.status(400).json({
         message: e
@@ -113,7 +114,7 @@ class UserControllers {
       const userID = req.params.id;
       if (!userID) {
         return res.status(200).json({
-          status: 'Error',
+          status: 'ERR',
           message: 'the user is required'
         });
       }
@@ -129,10 +130,10 @@ class UserControllers {
   // [POST] /user/refresh-token
   async refreshToken(req, res, next) {
     try {
-      const token = req.headers.token.split(' ')[1];
+      const token = req.cookies.refresh_token;
       if (!token) {
         return res.status(200).json({
-          status: 'Error',
+          status: 'ERR',
           message: 'the token is required'
         });
       }
