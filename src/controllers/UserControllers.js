@@ -24,6 +24,7 @@ class UserControllers {
       //     message: 'Mật Khẩu Không trùng Khớp!!!'
       //   });
       // }
+
       const response = await UserService.registerUser(req.body);
       return res.status(200).json(response);
     } catch (e) {
@@ -45,16 +46,16 @@ class UserControllers {
         });
       } else if (!isCheckEmail) {
         return res.status(400).json({
-          status: 'ERR',
-          message: 'Mời Nhập Email Chính Xác!!!'
+          message: { status: 'ERR', message: 'Mời Nhập Email Chính Xác!!!' }
         });
       }
       const response = await UserService.loginUser(req.body);
       const { refresh_token, ...newResponse } = response;
-
       res.cookie('refresh_token', refresh_token, {
-        HttpOnly: true,
-        Secure: true
+        domain: 'htpp://localhost:5173',
+        httpOnly: true,
+        sameSite: 'strict',
+        secure: false
       });
       return res.status(200).json(newResponse);
     } catch (e) {
@@ -129,6 +130,7 @@ class UserControllers {
 
   // [POST] /user/refresh-token
   async refreshToken(req, res, next) {
+    console.log('req.cookies.refresh_token', req.cookies);
     try {
       const token = req.cookies.refresh_token;
       if (!token) {
