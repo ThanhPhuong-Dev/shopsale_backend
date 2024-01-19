@@ -52,7 +52,6 @@ class UserControllers {
       const response = await UserService.loginUser(req.body);
       const { refresh_token, ...newResponse } = response;
       res.cookie('refresh_token', refresh_token, {
-        domain: 'htpp://localhost:5173',
         httpOnly: true,
         sameSite: 'strict',
         secure: false
@@ -130,9 +129,10 @@ class UserControllers {
 
   // [POST] /user/refresh-token
   async refreshToken(req, res, next) {
-    console.log('req.cookies.refresh_token', req.cookies);
+    // console.log('req.cookies.refresh_token', req.cookies.refresh_token);
     try {
       const token = req.cookies.refresh_token;
+      // const token = req.body.refresh_token;
       if (!token) {
         return res.status(200).json({
           status: 'ERR',
