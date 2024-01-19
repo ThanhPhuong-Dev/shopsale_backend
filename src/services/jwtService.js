@@ -7,7 +7,7 @@ const generalAccessToken = (payload) => {
       ...payload
     },
     process.env.ACCESS_TOKEN,
-    { expiresIn: '1h' }
+    { expiresIn: '10s' }
   );
   return access_token;
 };
@@ -33,7 +33,7 @@ const refreshTokenService = (token) => {
             message: 'the athencation'
           });
         }
-        console.log('user', user);
+        // console.log('user', user);
         const access_token = generalAccessToken({
           id: user?.id,
           isAdmin: user?.isAdmin
@@ -41,7 +41,7 @@ const refreshTokenService = (token) => {
         resolve({
           status: 'OK',
           message: 'Success',
-          data: access_token
+          access_token: access_token
         });
       });
     } catch (e) {
