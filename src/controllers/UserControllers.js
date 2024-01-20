@@ -147,6 +147,21 @@ class UserControllers {
       });
     }
   }
+
+  // [POST] api/user/log-out
+  async logoutUser(req, res, next) {
+    try {
+      res.clearCookie('refresh_token');
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Log Out Success'
+      });
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
 }
 
 module.exports = new UserControllers();
