@@ -68,6 +68,15 @@ class UserControllers {
   async updateUser(req, res, next) {
     try {
       const userID = req.params.id;
+      const isCheckEmail = ValidateEmail(req.body.email);
+      if (!isCheckEmail) {
+        return res.status(400).json({
+          message: {
+            status: 'ERR',
+            message: 'Email Chỉnh Sửa Không Chính Xác'
+          }
+        });
+      }
       const response = await UserService.updateUser(userID, req.body);
       return res.status(200).json(response);
     } catch (e) {
