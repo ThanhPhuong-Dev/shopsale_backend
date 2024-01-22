@@ -89,7 +89,7 @@ const updateUser = (id, data) => {
       if (checkUser) {
         resolve({
           status: 'OK',
-          message: 'Sussces',
+          message: 'Sussces update',
           data: updateUser
         });
       }
