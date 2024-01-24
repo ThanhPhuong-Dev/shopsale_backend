@@ -1,16 +1,41 @@
 const ProductService = require('../services/productService');
+const isNumberS = require('../utils/isNumer');
 
 class ProductControllers {
   // [POST] /product/create
   async create(req, res, next) {
     try {
-      const { name, image, type, price, countInStock, rating, description } = req.body;
-      if (!name || !image || !type || !price || !countInStock || !rating || !description) {
-        return res.status(200).json({
-          status: 'EROOR',
-          message: 'the product all required'
+      console.log('chạydc');
+      const { name, image, type, price, countInStock, rating, description, location, discount, sold } = req.body;
+      // if (
+      //   !name ||
+      //   !image ||
+      //   !type ||
+      //   !price ||
+      //   !countInStock ||
+      //   !rating ||
+      //   !description ||
+      //   !location ||
+      //   !discount ||
+      //   !sold
+      // ) {
+      //   return res.status(400).json({
+      //     message: {
+      //       status: 'ERR',
+      //       message: 'Mời Nhập Thông Tin Sản Phẩm'
+      //     }
+      //   });
+      // }
+      // console.log('isNumber(price)', isNumberS(price));
+      if (isNumberS(price) || isNumberS(countInStock) || isNumberS(discount) || isNumberS(sold) || isNumberS(rating)) {
+        return res.status(400).json({
+          message: {
+            status: 'ERR',
+            message: 'Các Giá trị Phải Nhập Bằng Số'
+          }
         });
       }
+      console.log('chạydc');
       const response = await ProductService.createProduct(req.body);
       return res.status(200).json(response);
     } catch (e) {
@@ -82,7 +107,7 @@ class ProductControllers {
     try {
       const { page, limit, sort, filter } = req.query;
 
-      const response = await ProductService.getAllProduct(Number(limit) || 8, Number(page) || 0, sort, filter);
+      const response = await ProductService.getAllProduct(Number(limit) || 12, Number(page) || 0, sort, filter);
 
       return res.status(200).json(response);
     } catch (e) {

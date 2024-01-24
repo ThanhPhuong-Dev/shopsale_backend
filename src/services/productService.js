@@ -2,26 +2,30 @@ const Product = require('../models/ProductModel');
 
 const createProduct = (newProduct) => {
   return new Promise(async (resolve, reject) => {
-    const { name, image, type, price, countInStock, rating, description } = newProduct;
+    const { name, image, type, price, countInStock, rating, description, location, discount, sold } = newProduct;
     try {
       const checkProduct = await Product.findOne({
         name: name
       });
       if (checkProduct !== null) {
-        resolve({
-          status: 'error',
-          message: 'name repeat'
+        reject({
+          status: 'ERR',
+          message: 'Tên Sản Phẩm Này Đã Có Trong Cửa Hàng'
         });
       }
 
       const createProduct = await Product.create({
-        name,
-        image,
-        type,
-        price,
-        countInStock,
-        rating,
-        description
+        // name,
+        // image,
+        // type,
+        // price,
+        // countInStock,
+        // rating,
+        // description,
+        // location,
+        // discount,
+        // sold
+        ...newProduct
       });
       if (createProduct) {
         resolve({
