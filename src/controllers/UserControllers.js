@@ -77,6 +77,7 @@ class UserControllers {
           }
         });
       }
+
       const response = await UserService.updateUser(userID, req.body);
       return res.status(200).json(response);
     } catch (e) {

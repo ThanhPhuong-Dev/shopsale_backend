@@ -42,7 +42,7 @@ const createProduct = (newProduct) => {
 
 const updateProduct = (productID, data) => {
   return new Promise(async (resolve, reject) => {
-    const { name, image, type, price, countInStock, rating, description } = data;
+    // const { name, image, type, price, countInStock, rating, description } = data;
     try {
       const checkiDProduct = await Product.findOne({
         _id: productID
@@ -57,7 +57,7 @@ const updateProduct = (productID, data) => {
       //   });
       // }
       if (checkiDProduct === null) {
-        resolve({
+        reject({
           status: 'error',
           message: 'the product not defined'
         });
@@ -66,13 +66,7 @@ const updateProduct = (productID, data) => {
       const updateNewProduct = await Product.findByIdAndUpdate(
         productID,
         {
-          name,
-          image,
-          type,
-          price,
-          countInStock,
-          rating,
-          description
+          ...data
         },
         { new: true }
       );
@@ -103,7 +97,7 @@ const getDetailsProduct = (productID) => {
       }
       resolve({
         status: 'OK',
-        message: 'Sussces update',
+        message: 'Sussces Product Details',
         data: checkiDProduct
       });
     } catch (e) {
@@ -126,6 +120,24 @@ const deleteProduct = (productID) => {
       }
       const removeProduct = await Product.findByIdAndDelete({
         _id: productID
+      });
+      if (removeProduct) {
+        resolve({
+          status: 'OK',
+          message: 'Sussces remove'
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const deleteMany = (productID) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const removeProduct = await Product.deleteMany({
+        _id: { $in: productID }
       });
       if (removeProduct) {
         resolve({
@@ -193,4 +205,4 @@ const getAllProduct = (limit, page, sort, filter) => {
     }
   });
 };
-module.exports = { createProduct, updateProduct, getDetailsProduct, deleteProduct, getAllProduct };
+module.exports = { createProduct, updateProduct, getDetailsProduct, deleteProduct, getAllProduct, deleteMany };
