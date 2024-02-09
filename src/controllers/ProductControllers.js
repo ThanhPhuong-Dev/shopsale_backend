@@ -50,7 +50,7 @@ class ProductControllers {
       const { name, image, type, price, countInStock, rating, description } = req.body;
       const productID = req.params.id;
       if (!name || !image || !type || !price || !countInStock || !rating || !description) {
-        return res.status(200).json({
+        return res.status(400).json({
           status: 'EROOR',
           message: 'the product all required'
         });
@@ -94,6 +94,24 @@ class ProductControllers {
         });
       }
       const response = await ProductService.deleteProduct(productID);
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
+
+  async deleteMany(req, res, next) {
+    try {
+      const productID = req.body;
+      if (!productID) {
+        return res.status(400).json({
+          status: 'ERR',
+          message: 'the productID is required'
+        });
+      }
+      const response = await ProductService.deleteMany(req.body);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({

@@ -7,15 +7,16 @@ const authMiddleware = (req, res, next) => {
   jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
     if (err) {
       return res.status(400).json({
-        message: 'the authemtication',
-        status: 'ERR'
+        message: 'the authemtications',
+        status: 'ERR',
+        error: err
       });
     }
     if (user?.isAdmin) {
       next();
     } else {
       return res.status(400).json({
-        message: 'the authemtication',
+        message: 'the authemticationn',
         status: 'ERR'
       });
     }
