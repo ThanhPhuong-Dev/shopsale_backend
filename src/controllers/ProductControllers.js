@@ -124,9 +124,23 @@ class ProductControllers {
   async getAllProduct(req, res, next) {
     try {
       const { page, limit, sort, filter } = req.query;
-
+      console.log('limit', limit);
       const response = await ProductService.getAllProduct(Number(limit) || 12, Number(page) || 0, sort, filter);
 
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
+
+  // [GET] /product/searchProduct
+  async searchProduct(req, res, next) {
+    try {
+      const { filter } = req.query;
+      console.log('req.body', req.query);
+      const response = await ProductService.searchProduct(filter);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
