@@ -35,7 +35,6 @@ class ProductControllers {
           }
         });
       }
-      console.log('chạydc');
       const response = await ProductService.createProduct(req.body);
       return res.status(200).json(response);
     } catch (e) {
@@ -124,9 +123,7 @@ class ProductControllers {
   async getAllProduct(req, res, next) {
     try {
       const { page, limit, sort, filter } = req.query;
-      console.log('limit', limit);
-      const response = await ProductService.getAllProduct(Number(limit) || 12, Number(page) || 0, sort, filter);
-
+      const response = await ProductService.getAllProduct(Number(limit), Number(page) || 0, sort, filter);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
@@ -139,8 +136,19 @@ class ProductControllers {
   async searchProduct(req, res, next) {
     try {
       const { filter } = req.query;
-      console.log('req.body', req.query);
       const response = await ProductService.searchProduct(filter);
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
+
+  // [GET] /product/type-all-product
+  async getAllType(req, res, next) {
+    try {
+      const response = await ProductService.getAllType();
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
