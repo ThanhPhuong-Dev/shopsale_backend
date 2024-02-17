@@ -13,7 +13,7 @@ const createProduct = (newProduct) => {
           message: 'Tên Sản Phẩm Này Đã Có Trong Cửa Hàng'
         });
       }
-
+      console.log('chay dc');
       const createProduct = await Product.create({
         // name,
         // image,
@@ -194,12 +194,22 @@ const getAllProduct = (limit, page, sort, filter) => {
         .skip(page * limit);
       resolve({
         status: 'OK',
-        message: 'Sussces getALL',
+        message: 'Sussces getALL limit',
         data: checkiDProduct,
         totalProduct: totalProduct,
         pageCurrent: Number(page + 1),
         totalPage: Math.ceil(totalProduct / limit)
       });
+
+      // const allProduct = await Product.find({});
+      // resolve({
+      //   status: 'OK',
+      //   message: 'Sussces getALL',
+      //   data: allProduct,
+      //   totalProduct: totalProduct,
+      //   pageCurrent: Number(page + 1),
+      //   totalPage: Math.ceil(totalProduct / limit)
+      // });
     } catch (e) {
       reject(e);
     }
@@ -226,6 +236,21 @@ const searchProduct = (filter) => {
     }
   });
 };
+
+const getAllType = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const typeProduct = await Product.distinct('type');
+      resolve({
+        status: 'Success Type',
+        message: 'Type thành công',
+        data: typeProduct
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 module.exports = {
   createProduct,
   updateProduct,
@@ -233,5 +258,6 @@ module.exports = {
   deleteProduct,
   getAllProduct,
   deleteMany,
-  searchProduct
+  searchProduct,
+  getAllType
 };
