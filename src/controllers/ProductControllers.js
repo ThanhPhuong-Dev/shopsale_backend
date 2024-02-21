@@ -1,32 +1,13 @@
 const ProductService = require('../services/productService');
 const isNumberS = require('../utils/isNumer');
+const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
 class ProductControllers {
   // [POST] /product/create
   async create(req, res, next) {
     try {
-      console.log('chạydc');
+      console.log('req.file', req.file);
       const { name, image, type, price, countInStock, rating, description, location, discount, sold } = req.body;
-      // if (
-      //   !name ||
-      //   !image ||
-      //   !type ||
-      //   !price ||
-      //   !countInStock ||
-      //   !rating ||
-      //   !description ||
-      //   !location ||
-      //   !discount ||
-      //   !sold
-      // ) {
-      //   return res.status(400).json({
-      //     message: {
-      //       status: 'ERR',
-      //       message: 'Mời Nhập Thông Tin Sản Phẩm'
-      //     }
-      //   });
-      // }
-      // console.log('isNumber(price)', isNumberS(price));
       if (isNumberS(price) || isNumberS(countInStock) || isNumberS(discount) || isNumberS(sold) || isNumberS(rating)) {
         return res.status(400).json({
           message: {
@@ -35,7 +16,17 @@ class ProductControllers {
           }
         });
       }
-      const response = await ProductService.createProduct(req.body);
+
+      let imagePath;
+      if (req.file) {
+        imagePath = await uploadToCloudinary(req.file.path, {
+          folder: 'products'
+        });
+      } else {
+        imagePath = req.body.image;
+      }
+
+      const response = await ProductService.createProduct(req.body, imagePath);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
@@ -54,7 +45,16 @@ class ProductControllers {
           message: 'the product all required'
         });
       }
-      const response = await ProductService.updateProduct(productID, req.body);
+
+      let imagePath;
+      if (req.file) {
+        imagePath = await uploadToCloudinary(req.file.path, {
+          folder: 'products'
+        });
+      } else {
+        imagePath = req.body.image;
+      }
+      const response = await ProductService.updateProduct(productID, req.body, imagePath);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
@@ -123,7 +123,7 @@ class ProductControllers {
   async getAllProduct(req, res, next) {
     try {
       const { page, limit, sort, filter } = req.query;
-      const response = await ProductService.getAllProduct(Number(limit), Number(page) || 0, sort, filter);
+      const response = await ProductService.getAllProduct(Number(limit) || 20, Number(page) || 0, sort, filter);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
@@ -149,6 +149,19 @@ class ProductControllers {
   async getAllType(req, res, next) {
     try {
       const response = await ProductService.getAllType();
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
+  // [GET] /product/page-type-product
+
+  async pageTypeProduct(req, res, next) {
+    try {
+      const { page, limit, sort, filter } = req.query;
+      const response = await ProductService.pageTypeProduct(Number(limit) || 10, Number(page) || 0, filter);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
