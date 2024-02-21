@@ -5,7 +5,7 @@ yarn-error.log
 
 # MongoDB
 data/db/
-
+public
 # Môi trường
 .env
 

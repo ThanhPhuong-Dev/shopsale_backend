@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/db/connect');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+// const cloudinaryConnect = require('./config/db/cloudinary');
 
 dotenv.config();
 const app = express();
@@ -20,7 +21,8 @@ app.use(cors(corsOptions));
 // app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-
+// app.use(express.static(path.join(__dirname, 'public')));
+// cloudinaryConnect();
 routes(app);
 db.connect();
 

@@ -1,6 +1,6 @@
 const Product = require('../models/ProductModel');
 
-const createProduct = (newProduct) => {
+const createProduct = (newProduct, imagePath) => {
   return new Promise(async (resolve, reject) => {
     const { name, image, type, price, countInStock, rating, description, location, discount, sold } = newProduct;
     try {
@@ -13,7 +13,6 @@ const createProduct = (newProduct) => {
           message: 'Tên Sản Phẩm Này Đã Có Trong Cửa Hàng'
         });
       }
-      console.log('chay dc');
       const createProduct = await Product.create({
         // name,
         // image,
@@ -25,7 +24,8 @@ const createProduct = (newProduct) => {
         // location,
         // discount,
         // sold
-        ...newProduct
+        ...newProduct,
+        image: imagePath
       });
       if (createProduct) {
         resolve({
@@ -40,7 +40,7 @@ const createProduct = (newProduct) => {
   });
 };
 
-const updateProduct = (productID, data) => {
+const updateProduct = (productID, data, imagePath) => {
   return new Promise(async (resolve, reject) => {
     // const { name, image, type, price, countInStock, rating, description } = data;
     try {
@@ -66,7 +66,8 @@ const updateProduct = (productID, data) => {
       const updateNewProduct = await Product.findByIdAndUpdate(
         productID,
         {
-          ...data
+          ...data,
+          image: imagePath
         },
         { new: true }
       );
@@ -155,21 +156,6 @@ const getAllProduct = (limit, page, sort, filter) => {
   return new Promise(async (resolve, reject) => {
     try {
       const totalProduct = await Product.countDocuments();
-
-      // if (filter) {
-      //   const filterProduct = await Product.find({
-      //     [filter[0]]: { $regex: filter[1] }
-      //   });
-      //   resolve({
-      //     status: 'OK',
-      //     message: 'Sussces filter',
-      //     data: filterProduct,
-      //     totalProduct: totalProduct,
-      //     pageCurrent: Number(page + 1),
-      //     totalPage: Math.ceil(totalProduct / limit)
-      //   });
-      // }
-
       //sort
       // if (sort) {
       //   const objectSort = {};
@@ -188,7 +174,7 @@ const getAllProduct = (limit, page, sort, filter) => {
       //     totalPage: Math.ceil(totalProduct / limit)
       //   });
       // }
-
+      console.log('chay dccdcscds');
       const checkiDProduct = await Product.find({})
         .limit(limit)
         .skip(page * limit);
@@ -251,6 +237,39 @@ const getAllType = () => {
     }
   });
 };
+
+const pageTypeProduct = (limit, page, filter) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const totalType = await Product.countDocuments({ [filter[0]]: { $regex: filter[1] } });
+      if (filter) {
+        const filterProduct = await Product.find({
+          [filter[0]]: { $regex: filter[1] }
+        })
+          .limit(limit)
+          .skip(page * limit);
+        resolve({
+          status: 'OK',
+          message: 'Sussces type filter',
+          data: filterProduct,
+          toltalType: totalType,
+          pageCurrent: Number(page + 1),
+          totalPage: Math.ceil(totalType / limit)
+        });
+      }
+
+      // const typeProduct = await Product.find({ type: typeName });
+      // resolve({
+      //   status: 'Success Type',
+      //   message: 'Type thành công',
+      //   data: typeProduct
+      // });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -259,5 +278,6 @@ module.exports = {
   getAllProduct,
   deleteMany,
   searchProduct,
-  getAllType
+  getAllType,
+  pageTypeProduct
 };

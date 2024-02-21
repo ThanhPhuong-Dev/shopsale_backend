@@ -75,9 +75,10 @@ const loginUser = (newUser) => {
   });
 };
 
-const updateUser = (id, data) => {
+const updateUser = (id, imageUrl, data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const { avatar, ...newData } = data;
       const checkUser = await User.findOne({ _id: id });
       if (checkUser === null) {
         resolve({
@@ -85,7 +86,7 @@ const updateUser = (id, data) => {
           message: 'the user is not defined'
         });
       }
-      const updateUser = await User.findByIdAndUpdate(id, { ...data }, { new: true });
+      const updateUser = await User.findByIdAndUpdate(id, { ...data, avatar: imageUrl }, { new: true });
       if (checkUser) {
         resolve({
           status: 'OK',

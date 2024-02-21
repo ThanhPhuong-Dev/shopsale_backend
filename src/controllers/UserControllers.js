@@ -1,7 +1,7 @@
 const ValidateEmail = require('../utils/validateEmail');
 const UserService = require('../services/userService');
 const jwtService = require('../services/jwtService');
-
+const uploadToCloudinary = require('../utils/uploadToCloudinary');
 class UserControllers {
   // [POST] /user/register
   async register(req, res, next) {
@@ -68,6 +68,13 @@ class UserControllers {
   async updateUser(req, res, next) {
     try {
       const userID = req.params.id;
+
+      let imageUrl;
+      if (req.file) {
+        imageUrl = await uploadToCloudinary(req.file.path, { folder: 'avatars' });
+      } else {
+        imageUrl = req.body.avatar;
+      }
       const isCheckEmail = ValidateEmail(req.body.email);
       if (!isCheckEmail) {
         return res.status(400).json({
@@ -77,8 +84,7 @@ class UserControllers {
           }
         });
       }
-
-      const response = await UserService.updateUser(userID, req.body);
+      const response = await UserService.updateUser(userID, imageUrl, req.body);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
