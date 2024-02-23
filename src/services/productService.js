@@ -174,7 +174,7 @@ const getAllProduct = (limit, page, sort, filter) => {
       //     totalPage: Math.ceil(totalProduct / limit)
       //   });
       // }
-      console.log('chay dccdcscds');
+
       const checkiDProduct = await Product.find({})
         .limit(limit)
         .skip(page * limit);
