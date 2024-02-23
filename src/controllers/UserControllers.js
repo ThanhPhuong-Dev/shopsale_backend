@@ -68,22 +68,25 @@ class UserControllers {
   async updateUser(req, res, next) {
     try {
       const userID = req.params.id;
-
       let imageUrl;
       if (req.file) {
         imageUrl = await uploadToCloudinary(req.file.path, { folder: 'avatars' });
       } else {
         imageUrl = req.body.avatar;
       }
-      const isCheckEmail = ValidateEmail(req.body.email);
-      if (!isCheckEmail) {
-        return res.status(400).json({
-          message: {
-            status: 'ERR',
-            message: 'Email Chỉnh Sửa Không Chính Xác'
-          }
-        });
+
+      if (req.body.email) {
+        const isCheckEmail = ValidateEmail(req.body.email);
+        if (!isCheckEmail) {
+          return res.status(400).json({
+            message: {
+              status: 'ERR',
+              message: 'Email Chỉnh Sửa Không Chính Xác'
+            }
+          });
+        }
       }
+
       const response = await UserService.updateUser(userID, imageUrl, req.body);
       return res.status(200).json(response);
     } catch (e) {
