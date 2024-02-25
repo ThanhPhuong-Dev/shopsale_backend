@@ -6,7 +6,7 @@ class ProductControllers {
   // [POST] /product/create
   async create(req, res, next) {
     try {
-      console.log('req.file', req.file);
+      
       const { name, image, type, price, countInStock, rating, description, location, discount, sold } = req.body;
       if (isNumberS(price) || isNumberS(countInStock) || isNumberS(discount) || isNumberS(sold) || isNumberS(rating)) {
         return res.status(400).json({

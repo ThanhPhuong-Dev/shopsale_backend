@@ -42,7 +42,7 @@ const createProduct = (newProduct, imagePath) => {
 
 const updateProduct = (productID, data, imagePath) => {
   return new Promise(async (resolve, reject) => {
-    // const { name, image, type, price, countInStock, rating, description } = data;
+    const { countInStock } = data;
     try {
       const checkiDProduct = await Product.findOne({
         _id: productID
@@ -67,6 +67,7 @@ const updateProduct = (productID, data, imagePath) => {
         productID,
         {
           ...data,
+
           image: imagePath
         },
         { new: true }
