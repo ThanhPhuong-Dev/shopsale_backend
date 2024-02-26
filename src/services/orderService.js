@@ -6,7 +6,6 @@ const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { orderItems } = newOrder;
-      
 
       const promises = orderItems.map(async (order) => {
         const productData = await Product.findByIdAndUpdate(
@@ -72,4 +71,37 @@ const getOrderUser = (userId) => {
   });
 };
 
-module.exports = { createOrder, getOrderUser };
+const orderCancel = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const userOrder = await Order.findOne({
+        'orderItems._id': userId // Tìm đơn hàng chứa orderItem có _id là userId
+      });
+
+      if (!userOrder) {
+        return resolve({ status: 'Error', message: 'Order not found' });
+      }
+
+      const { orderItems, ...newUserOrder } = userOrder;
+      const userCancel = orderItems?.filter((item) => item._id != userId);
+
+      if (userCancel.length === 0) {
+        // Nếu mảng orderItems trở thành rỗng, xóa đối tượng Order
+        const deletedOrder = await Order.findOneAndDelete({ _id: userOrder._id });
+        return resolve({ status: 'OK', message: 'Order deleted', data: deletedOrder });
+      }
+
+      const updatedOrder = await Order.findOneAndUpdate(
+        { 'orderItems._id': userId },
+        { newUserOrder, orderItems: userCancel },
+        { new: true }
+      );
+
+      resolve({ status: 'OK', message: 'Remove Success', data: updatedOrder });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+module.exports = { createOrder, getOrderUser, orderCancel };
