@@ -1,11 +1,11 @@
 const Order = require('../models/OrderModel');
 const Product = require('../models/ProductModel');
 const User = require('../models/UserModel');
-
+const EmailServices = require('./EmailService');
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { orderItems } = newOrder;
+      const { orderItems, email } = newOrder;
 
       const promises = orderItems.map(async (order) => {
         const productData = await Product.findByIdAndUpdate(
@@ -18,7 +18,7 @@ const createOrder = (newOrder) => {
           },
           { new: true }
         );
-
+        console.log('product', productData);
         if (productData) {
           const createOrder = await Order.create({
             ...newOrder
@@ -39,6 +39,9 @@ const createOrder = (newOrder) => {
       if (newData.length) {
         resolve({ status: 'ERR', message: `San pham voi id${newData.join(',')} khong đủ hàng` });
       }
+      console.log('chay dc1');
+      await EmailServices.sendEmailCreateOrder(email, orderItems);
+      console.log('chay dcc');
       resolve({ status: 'OK', message: `Success` });
     } catch (e) {
       reject(e);
