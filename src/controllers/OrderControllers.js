@@ -3,7 +3,6 @@ const OrderService = require('../services/orderService');
 class OrderControllers {
   async create(req, res, next) {
     try {
-      // console.log('req.body', req.body);
       const {
         orderItems,
         shippingAddress,
@@ -49,7 +48,7 @@ class OrderControllers {
   async orderCancel(req, res, next) {
     try {
       const userID = req.params.id;
-      
+
       if (!userID) {
         return res.status(200).json({
           status: 'ERROR',
