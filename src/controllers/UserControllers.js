@@ -181,6 +181,24 @@ class UserControllers {
       });
     }
   }
+
+  async LoadCoin(req, res, next) {
+    try {
+      const userID = req.params.id;
+
+      if (!userID) {
+        return res.status(400).json({
+          message: 'Lỗi id'
+        });
+      }
+      const response = await UserService.LoadCoin(userID, req.body);
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
 }
 
 module.exports = new UserControllers();

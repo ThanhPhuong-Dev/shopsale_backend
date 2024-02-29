@@ -25,7 +25,7 @@ const sendEmailCreateOrder = async (email, orderItems) => {
 
   let info = await transporter.sendMail({
     from: process.env.EMAIL_ACCOUNT, // sender address
-    to: email || 'ohphuong123@gmail.com', // list of receivers
+    to: 'ohphuong123@gmail.com', // list of receivers
     subject: 'Đơn hàng đã đặt của website https://www.facebook.com/profile.php?id=100015982263062', // Subject line
     text: `${orderItems}`, // plain text body
     html: `<div><b>Bạn đã đặt hàng thành công tại website thanhphuong</b></div> ${letOrderString}` // html body
