@@ -85,7 +85,7 @@ const updateUser = (id, imageUrl, data) => {
           message: 'the user is not defined'
         });
       }
-      console.log('dât', data);
+
       let updateUser;
       if (imageUrl) {
         updateUser = await User.findByIdAndUpdate(id, { ...data, avatar: imageUrl }, { new: true });

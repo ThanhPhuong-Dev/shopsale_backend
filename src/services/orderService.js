@@ -77,6 +77,22 @@ const createOrder = (newOrder) => {
   });
 };
 
+const getOrderAll = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const getAllUserId = await Order.find();
+      resolve({
+        status: 'OK',
+        message: 'Success ALL Order',
+        data: getAllUserId,
+        totalData: Number(getAllUserId.length)
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getOrderUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -135,4 +151,4 @@ const orderCancel = (userId) => {
   });
 };
 
-module.exports = { createOrder, getOrderUser, orderCancel };
+module.exports = { createOrder, getOrderUser, orderCancel, getOrderAll };

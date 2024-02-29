@@ -26,6 +26,17 @@ class OrderControllers {
     }
   }
 
+  async getOrderAll(req, res, next) {
+    try {
+      const response = await OrderService.getOrderAll();
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
+
   async getOrderUser(req, res, next) {
     try {
       const userID = req.params.id;
