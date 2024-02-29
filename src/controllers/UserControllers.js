@@ -56,7 +56,7 @@ class UserControllers {
         sameSite: 'strict',
         secure: false
       });
-      return res.status(200).json(newResponse);
+      return res.status(200).json(newResponse, refresh_token);
     } catch (e) {
       return res.status(400).json({
         message: e
@@ -147,24 +147,24 @@ class UserControllers {
   }
 
   // [POST] /user/refresh-token
-  async refreshToken(req, res, next) {
-    try {
-      const token = req.cookies.refresh_token;
-      // const token = req.body.refresh_token;
-      if (!token) {
-        return res.status(200).json({
-          status: 'ERR',
-          message: 'the token is required'
-        });
-      }
-      const response = await jwtService.refreshTokenService(token);
-      return res.status(200).json(response);
-    } catch (e) {
-      return res.status(400).json({
-        message: e
-      });
-    }
-  }
+  // async refreshToken(req, res, next) {
+  //   try {
+  //     const token = req.cookies.refresh_token;
+  //     // const token = req.body.refresh_token;
+  //     if (!token) {
+  //       return res.status(200).json({
+  //         status: 'ERR',
+  //         message: 'the token is required'
+  //       });
+  //     }
+  //     const response = await jwtService.refreshTokenService(token);
+  //     return res.status(200).json(response);
+  //   } catch (e) {
+  //     return res.status(400).json({
+  //       message: e
+  //     });
+  //   }
+  // }
 
   // [POST] api/user/log-out
   async logoutUser(req, res, next) {
@@ -181,30 +181,23 @@ class UserControllers {
     }
   }
 
-  // async refreshToken(req, res, next) {
-  //   try {
-  //     const authHeader = req.headers['authorization'];
-  //     if (!authHeader) {
-  //       return res.status(401).json({
-  //         status: 'ERR',
-  //         message: 'Authorization header is missing'
-  //       });
-  //     }
-  //     const token = authHeader.split(' ')[1];
-  //     if (!token) {
-  //       return res.status(401).json({
-  //         status: 'ERR',
-  //         message: 'Token is missing in Authorization header'
-  //       });
-  //     }
-  //     const response = await jwtService.refreshTokenService(token);
-  //     return res.status(200).json(response);
-  //   } catch (e) {
-  //     return res.status(400).json({
-  //       message: e
-  //     });
-  //   }
-  // }
+  async refreshToken(req, res, next) {
+    try {
+      const token = req.headers.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({
+          status: 'ERR',
+          message: 'Token is missing in Authorization header'
+        });
+      }
+      const response = await jwtService.refreshTokenService(token);
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(400).json({
+        message: e
+      });
+    }
+  }
 
   async LoadCoin(req, res, next) {
     try {
