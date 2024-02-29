@@ -34,7 +34,7 @@ const refreshTokenService = (token) => {
             message: 'the athencation'
           });
         }
-        // console.log('user', user);
+       
         const access_token = generalAccessToken({
           id: user?.id,
           isAdmin: user?.isAdmin
