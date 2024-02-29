@@ -19,6 +19,7 @@ router.post('/register', UserControllers.register);
 router.post('/login', UserControllers.login);
 router.post('/log-out', UserControllers.logoutUser);
 router.put('/update/:id', upload.single('avatar'), UserControllers.updateUser);
+router.put('/load-coin/:id', authUserMiddleware, UserControllers.LoadCoin);
 router.delete('/delete/:id', authMiddleware, UserControllers.deleteUser);
 router.get('/getAllUser', authMiddleware, UserControllers.getAllUser);
 router.get('/get-details/:id', authUserMiddleware, UserControllers.getDetailsUser);

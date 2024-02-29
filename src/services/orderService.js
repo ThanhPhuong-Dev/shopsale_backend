@@ -2,47 +2,75 @@ const Order = require('../models/OrderModel');
 const Product = require('../models/ProductModel');
 const User = require('../models/UserModel');
 const EmailServices = require('./EmailService');
+
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
+    const { orderItems, email, user, paymentMethod, totalPrice } = newOrder;
     try {
-      const { orderItems, email } = newOrder;
-
+      if (paymentMethod === 'pay_coin') {
+        const userCoin = await User.findByIdAndUpdate(
+          {
+            _id: user
+          },
+          {
+            $inc: {
+              userCoin: -totalPrice
+            }
+          }
+        );
+      }
       const promises = orderItems.map(async (order) => {
-        const productData = await Product.findByIdAndUpdate(
+        const productData = await Product.findOneAndUpdate(
           {
             _id: order.product,
             countInStock: { $gte: order.amount }
           },
           {
-            $inc: { countInStock: -order.amount, sold: +order.amount }
+            $inc: {
+              countInStock: -order.amount,
+              sold: +order.amount
+            }
           },
           { new: true }
         );
-        console.log('product', productData);
+
         if (productData) {
-          const createOrder = await Order.create({
-            ...newOrder
-          });
-          if (createOrder) {
-            return {
-              status: 'OK',
-              message: 'Sussces',
-              data: createOrder
-            };
-          }
+          return {
+            status: 'OK',
+            message: 'SUCCESS'
+          };
         } else {
-          return { message: 'ERROR', status: 'ERR', data: order.product };
+          return {
+            status: 'OK',
+            message: 'ERR',
+            id: order.product
+          };
         }
       });
+
       const results = await Promise.all(promises);
       const newData = results && results.filter((item) => item.id);
       if (newData.length) {
-        resolve({ status: 'ERR', message: `San pham voi id${newData.join(',')} khong đủ hàng` });
+        const arrId = [];
+        newData.forEach((item) => {
+          arrId.push(item.id);
+        });
+        resolve({
+          status: 'ERR',
+          message: `San pham voi id: ${arrId.join(',')} khong du hang`
+        });
+      } else {
+        const createdOrder = await Order.create({
+          ...newOrder
+        });
+        if (createdOrder) {
+          await EmailServices.sendEmailCreateOrder(email, orderItems);
+          resolve({
+            status: 'OK',
+            message: 'success'
+          });
+        }
       }
-      console.log('chay dc1');
-      await EmailServices.sendEmailCreateOrder(email, orderItems);
-      console.log('chay dcc');
-      resolve({ status: 'OK', message: `Success` });
     } catch (e) {
       reject(e);
     }

@@ -106,6 +106,39 @@ const updateUser = (id, imageUrl, data) => {
   });
 };
 
+const LoadCoin = (userID, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { voucher, coin } = data;
+      if (voucher === 'thanhphuongdev' || voucher === '0905919446') {
+        const updateCoinUser = await User.findByIdAndUpdate(
+          {
+            _id: userID
+          },
+          {
+            $inc: {
+              userCoin: +coin
+            }
+          }
+        );
+        if (updateCoinUser) {
+          resolve({
+            status: 'OK',
+            message: 'Voucher success',
+            data: updateCoinUser
+          });
+        }
+      } else {
+        resolve({
+          status: 'ERR',
+          message: 'Voucher không chính xác'
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 const deleteUser = (userID) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -166,4 +199,4 @@ const getDetailsUser = (userID) => {
   });
 };
 
-module.exports = { registerUser, loginUser, updateUser, deleteUser, getAllUser, getDetailsUser };
+module.exports = { registerUser, loginUser, updateUser, deleteUser, getAllUser, getDetailsUser, LoadCoin };
