@@ -184,12 +184,18 @@ class UserControllers {
 
   async refreshToken(req, res, next) {
     try {
-      let token = req.headers.token.split(' ')[1];
-      // const token = req.body.refresh_token;
-      if (!token) {
-        return res.status(200).json({
+      const authHeader = req.headers['authorization'];
+      if (!authHeader) {
+        return res.status(401).json({
           status: 'ERR',
-          message: 'the token is required'
+          message: 'Authorization header is missing'
+        });
+      }
+      const token = authHeader.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({
+          status: 'ERR',
+          message: 'Token is missing in Authorization header'
         });
       }
       const response = await jwtService.refreshTokenService(token);
