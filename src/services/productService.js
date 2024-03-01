@@ -13,20 +13,20 @@ const createProduct = (newProduct, imagePath) => {
           message: 'Tên Sản Phẩm Này Đã Có Trong Cửa Hàng'
         });
       }
-      // const createProduct = await Product.create({
-      //   // name,
-      //   // image,
-      //   // type,
-      //   // price,
-      //   // countInStock,
-      //   // rating,
-      //   // description,
-      //   // location,
-      //   // discount,
-      //   // sold
-      //   ...newProduct,
-      //   image: imagePath
-      // });
+      const createProduct = await Product.create({
+        // name,
+        // image,
+        // type,
+        // price,
+        // countInStock,
+        // rating,
+        // description,
+        // location,
+        // discount,
+        // sold
+        ...newProduct,
+        image: imagePath
+      });
       if (createProduct) {
         resolve({
           status: 'OK',
