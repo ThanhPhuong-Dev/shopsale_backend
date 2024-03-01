@@ -183,9 +183,9 @@ class UserControllers {
 
   async refreshToken(req, res, next) {
     try {
-      console.log('token', req.headers);
+     
       const token = req.headers.token.split(' ')[1];
-      console.log('token', token);
+     
       if (!token) {
         return res.status(401).json({
           status: 'ERR',

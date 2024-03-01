@@ -6,8 +6,13 @@ class ProductControllers {
   // [POST] /product/create
   async create(req, res, next) {
     try {
-      
       const { name, image, type, price, countInStock, rating, description, location, discount, sold } = req.body;
+      // if (!name || !image || !type || !price || !countInStock || !rating || !description || !location || !discount) {
+      //   return res.status(400).json({
+      //     status: 'ERR',
+      //     message: 'the product all required'
+      //   });
+      // }
       if (isNumberS(price) || isNumberS(countInStock) || isNumberS(discount) || isNumberS(sold) || isNumberS(rating)) {
         return res.status(400).json({
           message: {
@@ -123,7 +128,7 @@ class ProductControllers {
   async getAllProduct(req, res, next) {
     try {
       const { page, limit, sort, filter } = req.query;
-      const response = await ProductService.getAllProduct(Number(limit) || 20, Number(page) || 0, sort, filter);
+      const response = await ProductService.getAllProduct(Number(limit), Number(page) || 0, sort, filter);
       return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
