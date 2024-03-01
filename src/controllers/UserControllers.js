@@ -56,7 +56,7 @@ class UserControllers {
         sameSite: 'strict',
         secure: false
       });
-      return res.status(200).json(newResponse, refresh_token);
+      return res.status(200).json(response);
     } catch (e) {
       return res.status(400).json({
         message: e
@@ -183,7 +183,9 @@ class UserControllers {
 
   async refreshToken(req, res, next) {
     try {
-      const token = req.headers.split(' ')[1];
+      console.log('token', req.headers);
+      const token = req.headers.token.split(' ')[1];
+      console.log('token', token);
       if (!token) {
         return res.status(401).json({
           status: 'ERR',

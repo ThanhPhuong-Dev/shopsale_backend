@@ -8,7 +8,7 @@ const generalAccessToken = (payload) => {
       ...payload
     },
     process.env.ACCESS_TOKEN,
-    { expiresIn: '30s' }
+    { expiresIn: '1h' }
   );
   return access_token;
 };
@@ -34,7 +34,7 @@ const refreshTokenService = (token) => {
             message: 'the athencation'
           });
         }
-       
+
         const access_token = generalAccessToken({
           id: user?.id,
           isAdmin: user?.isAdmin
